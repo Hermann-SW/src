@@ -28,7 +28,9 @@
 #include <unistd.h>
 #include <zlib.h>
 
-#include "scheme.h"
+//#include "scheme.h"
+#define DarkWhite 0xffffffff
+#define DarkBlack 0x00000000
 
 static const uint32_t PSF2Magic = 0x864AB572;
 struct PSF2Header {
@@ -47,7 +49,7 @@ int main() {
 
 	const char *fontPath = getenv("FONT");
 	if (!fontPath) {
-		fontPath = "/usr/share/kbd/consolefonts/Lat2-Terminus16.psfu.gz";
+		fontPath = "/usr/share/consolefonts/Lat2-Terminus28x14.psf.gz";
 	}
 
 	gzFile font = gzopen(fontPath, "r");
@@ -99,10 +101,12 @@ int main() {
 		if (!local) err(EX_OSERR, "localtime");
 
 		char str[64];
-		len = strftime(str, sizeof(str), "%H:%M", local);
+		len = strftime(str, sizeof(str), "%H:%M:%S", local);
 		assert(len);
 
-		for (int i = 0; i < (60 - local->tm_sec); ++i, sleep(1)) {
+//		for (int i = 0; i < (60 - local->tm_sec); ++i, sleep(1)) {
+{
+usleep(500000);
 			uint32_t left = info.xres - header.glyphWidth * len;
 			uint32_t bottom = header.glyphHeight;
 
